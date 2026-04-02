@@ -16,12 +16,17 @@ public class BaseResponse<T> {
     private final List<String> errors;
     private final String timestamp;
 
+    private final int status;
+    private final String path;
+
     public static <T> BaseResponse<T> ok(T data, String message) {
         return BaseResponse.<T>builder()
                 .data(data)
                 .message(message)
                 .errors(null)
                 .timestamp(getCurrentTimestamp())
+                .status(200)
+                .path(null)
                 .build();
     }
 
