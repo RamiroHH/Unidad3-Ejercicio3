@@ -1,5 +1,6 @@
 package com.programacion4.unidad3ej3.config;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -19,11 +20,16 @@ public class GlobalExceptionHandler {
      * Captura las excepciones personalizadas y las convierte en una respuesta HTTP con el estado de la excepción
      */
     @ExceptionHandler(CustomException.class)
-    public ResponseEntity<BaseResponse<Object>> handleCustomException(CustomException ex) {
+    public ResponseEntity<BaseResponse<Object>> handleCustomException(
+            CustomException ex,
+            HttpServletRequest request) {
+
         BaseResponse<Object> response = BaseResponse.builder()
                 .message(ex.getMessage())
                 .errors(ex.getErrors())
                 .timestamp(Instant.now().toString())
+                .status(ex.getStatus().value()) // 👈 status
+                .path(request.getRequestURI())  // 👈 path
                 .build();
 
         return new ResponseEntity<>(response, ex.getStatus());
